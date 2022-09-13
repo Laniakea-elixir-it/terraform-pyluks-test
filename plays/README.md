@@ -10,7 +10,25 @@ Install the required ansible roles:
 $ ansible-galaxy install -r requirements.yml
 ```
 
-### 1. Configure NFS
+### 1. Encrypt volume with pyluks
+First, fill the `hosts` inventory file with the master node IP as retrieved from `terraform output`.
+
+A Vault instance properly configured is needed. First, retrieve a Vault token to write the passphrase, then fill the Vault variables in the `pyluks_dev_test.yml` playbook. Finally, run the playbook:
+```shell
+$ ansible-playbook -i inventory/hosts pyluks_dev_test.yml
+```
+
+### 2. Configure Docker
+Use the same `hosts` inventory of the previous step.
+
+Then, run the following commands:
+```shell
+$ ansible-playbook -i inventory/hosts docker_playbook.yml
+```
+
+The role will install Docker on the master node and configure it to store the container images in the external volume.
+
+### 3. Configure NFS
 First, fill the `hosts_nfs` inventory file with the master and worker node IPs as retrieved from the `terraform output` command.
 
 Then, run the following commands to configure the nodes with Ansible:
@@ -21,21 +39,3 @@ $ ansible-playbook -i inventory/hosts_nfs -e nfs_server_ip=${MASTER_IP} -e nfs_c
 ```
 
 The role will configure NFS to share the /export directory of the master node (where the external volume is mounted) on the worker node in /export.
-
-### 2. Configure Docker
-First, fill the `hosts` inventory file with the master node IP as retrieved from `terraform output`.
-
-Then, run the following commands:
-```shell
-$ ansible-playbook -i inventory/hosts docker_playbook.yml
-```
-
-The role will install Docker on the master node and configure it to store the container images in the external volume.
-
-### 3. Encrypt volume with pyluks
-Use the same `hosts` inventory of the previous file.
-
-A Vault instance properly configured is needed. First, retrieve a Vault token to write the passphrase, then fill the Vault variables in the `pyluks_dev_test.yml` playbook. Finally, run the playbook:
-```shell
-$ ansible-playbook -i inventory/hosts pyluks_dev_test.yml
-```
