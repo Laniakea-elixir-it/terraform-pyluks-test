@@ -1,0 +1,12 @@
+---
+- name: Install docker
+  hosts: all
+  become: true
+  tasks:
+  - include_role:
+      name: geerlingguy.docker
+    vars:
+      docker_install_compose: false
+      docker_users:
+        - ubuntu 
+      docker_daemon_options: { "data-root": "/export/docker_images" }

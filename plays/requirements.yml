@@ -1,0 +1,5 @@
+- src: geerlingguy.docker
+  version: 4.2.2
+- src: indigo-dc.nfs
+- src: https://github.com/Laniakea-elixir-it/ansible-role-luks-encryption
+  version: origin/dev

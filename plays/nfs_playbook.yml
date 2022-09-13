@@ -1,0 +1,34 @@
+- name: Configure nfs in master
+  hosts: master
+  vars:
+    nfs_server_export_dir: /export
+    client_mountpoint: /export
+  become: true
+  pre_tasks:
+    - name: Create directory
+      file:
+        path: "{{ nfs_server_export_dir }}"
+        state: directory
+
+  roles:
+    - role: indigo-dc.nfs
+      nfs_mode: 'server'
+      nfs_exports: [{path: "{{ nfs_server_export_dir }}", export: "{{ nfs_client_ip }}(rw,async,no_root_squash,no_subtree_check,insecure)"}]
+
+
+- name: Configure nfs in worker
+  hosts: worker
+  vars:
+    nfs_server_export_dir: /export
+    client_mountpoint: /export
+  become: true
+  pre_tasks:
+    - name: Create directory
+      file:
+        path: "{{ client_mountpoint }}"
+        state: directory
+
+  roles:
+    - role: indigo-dc.nfs
+      nfs_mode: 'client'
+      nfs_client_imports: [{ local: "{{ client_mountpoint }}", remote: "{{ nfs_server_export_dir }}", server_host: "{{ nfs_server_ip }}" }]

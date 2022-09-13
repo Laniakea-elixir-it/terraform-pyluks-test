@@ -1,0 +1,20 @@
+---
+- name: Install dev pyluks
+  hosts: all
+  become: true
+  tasks:
+    - include_role:
+        name: laniakea.luks_encryption
+      vars:
+        pyluks_package_name: "https://github.com/Laniakea-elixir-it/pyluks/archive/dev.zip"
+        #########
+        # Fill these variables:
+        vault_encryption_token:
+          endpoint: "xxxxxx"             # Vault instance endpoint
+          wrapping_token: "xxxxxx"       # Vault wrapping token
+        vault_encryption_path: "xxxxxx"  # Vault path to store secret
+        vault_encryption_key: "xxxxxx"   # Vault secret key
+        #########
+        daemons:
+          - docker
+          - nfs-server
