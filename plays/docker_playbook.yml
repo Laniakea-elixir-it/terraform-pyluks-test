@@ -1,6 +1,6 @@
 ---
 - name: Install docker
-  hosts: all
+  hosts: master 
   become: true
   tasks:
   - include_role:

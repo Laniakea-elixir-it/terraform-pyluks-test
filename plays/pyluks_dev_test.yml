@@ -1,6 +1,6 @@
 ---
 - name: Install dev pyluks
-  hosts: all
+  hosts: maste masterr 
   become: true
   tasks:
     - include_role:

@@ -11,7 +11,7 @@ $ ansible-galaxy install -r requirements.yml
 ```
 
 ### 1. Encrypt volume with pyluks
-First, fill the `hosts` inventory file with the master node IP as retrieved from `terraform output`.
+First, fill the `hosts` inventory file with the master node IP and worker node IP as retrieved from the `terraform output` command.
 
 A Vault instance properly configured is needed. First, retrieve a Vault token to write the passphrase, then fill the Vault variables in the `pyluks_dev_test.yml` playbook. Finally, run the playbook:
 ```shell
@@ -29,13 +29,11 @@ $ ansible-playbook -i inventory/hosts docker_playbook.yml
 The role will install Docker on the master node and configure it to store the container images in the external volume.
 
 ### 3. Configure NFS
-First, fill the `hosts_nfs` inventory file with the master and worker node IPs as retrieved from the `terraform output` command.
-
-Then, run the following commands to configure the nodes with Ansible:
+Run the following commands to configure NFS in the nodes with Ansible:
 ```shell
 $ export MASTER_IP=$(terraform output -raw master)
 $ export WORKER_IP=$(terraform output -raw worker)
-$ ansible-playbook -i inventory/hosts_nfs -e nfs_server_ip=${MASTER_IP} -e nfs_client_ip=${WORKER_IP} nfs_playbook.yml
+$ ansible-playbook -i inventory/hosts -e nfs_server_ip=${MASTER_IP} -e nfs_client_ip=${WORKER_IP} nfs_playbook.yml
 ```
 
 The role will configure NFS to share the /export directory of the master node (where the external volume is mounted) on the worker node in /export.
